@@ -1,5 +1,7 @@
 package com.example.address.service.impl;
 
+import com.example.address.globalException.BadRequestException;
+import com.example.address.globalException.ResourceNotFoundException;
 import com.example.address.model.dto.AddressDto;
 import com.example.address.model.dto.EmployeeAddressDto;
 import com.example.address.model.entity.Address;
@@ -27,9 +29,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public AddressDto getAddressById(Long id) {
-        if(id == null) throw new RuntimeException("Id should not be null");
+        if(id == null) throw new BadRequestException("Id should not be null");
         Address address = addressRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
         return mapper.map(address, AddressDto.class);
     }
 
@@ -46,7 +48,7 @@ public class AddressServiceImpl implements AddressService {
     public List<AddressDto> saveAllAddresses(EmployeeAddressDto employeeAddressDto) {
         Long empId = employeeAddressDto.getEmpId();
         if(empId == null) {
-            throw new RuntimeException("Employee ID should not be null!!");
+            throw new BadRequestException("Employee ID should not be null!!");
         }
         // TODO: We need to check whether emp with this ID is present or not
 
@@ -67,7 +69,7 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     public List<AddressDto> updateReqAddresses(EmployeeAddressDto employeeAddressDto) {
         if(employeeAddressDto.getEmpId() == null) {
-            throw new RuntimeException("Employee ID should not be null!!");
+            throw new BadRequestException("Employee ID should not be null!!");
         }
         // TODO: We need to check whether emp with this ID is present or not
 
@@ -106,7 +108,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public void deleteAddressById(Long id) {
-        if(id == null) throw new RuntimeException("Id should not be null");
+        if(id == null) throw new BadRequestException("Id should not be null");
         addressRepo.deleteById(id);
     }
 }
