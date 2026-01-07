@@ -1,4 +1,4 @@
-package com.employee.demo.model.dto;
+package com.employee.employee.model.dto;
 
 public class EmployeeDto {
 

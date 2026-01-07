@@ -1,13 +1,14 @@
-package com.employee.demo.globalException;
+package com.employee.employee.globalException;
 
 import org.springframework.http.HttpStatus;
 
-public class BadRequestException extends RuntimeException{
+public class ResourceNotFoundException extends RuntimeException{
+
     private String message;
 
     private HttpStatus status;
 
-    public BadRequestException(String message) {
+    public ResourceNotFoundException(String message) {
         this.message = message;
         this.status = HttpStatus.NOT_FOUND;
     }

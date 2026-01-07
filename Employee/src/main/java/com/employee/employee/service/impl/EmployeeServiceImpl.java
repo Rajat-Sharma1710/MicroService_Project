@@ -1,11 +1,11 @@
-package com.employee.demo.service.impl;
+package com.employee.employee.service.impl;
 
-import com.employee.demo.globalException.BadRequestException;
-import com.employee.demo.globalException.ResourceNotFoundException;
-import com.employee.demo.model.dto.EmployeeDto;
-import com.employee.demo.model.entity.Employee;
-import com.employee.demo.repository.EmployeeRepo;
-import com.employee.demo.service.EmployeeService;
+import com.employee.employee.globalException.BadRequestException;
+import com.employee.employee.globalException.ResourceNotFoundException;
+import com.employee.employee.model.dto.EmployeeDto;
+import com.employee.employee.model.entity.Employee;
+import com.employee.employee.repository.EmployeeRepo;
+import com.employee.employee.service.EmployeeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
