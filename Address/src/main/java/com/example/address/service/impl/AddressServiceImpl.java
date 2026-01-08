@@ -1,9 +1,11 @@
 package com.example.address.service.impl;
 
+import com.example.address.client.EmployeeClient;
 import com.example.address.globalException.BadRequestException;
 import com.example.address.globalException.ResourceNotFoundException;
 import com.example.address.model.dto.AddressDto;
 import com.example.address.model.dto.EmployeeAddressDto;
+import com.example.address.model.dto.EmployeeDto;
 import com.example.address.model.entity.Address;
 import com.example.address.repository.AddressRepo;
 import com.example.address.service.AddressService;
@@ -21,9 +23,13 @@ public class AddressServiceImpl implements AddressService {
 
     private final ModelMapper mapper;
 
-    public AddressServiceImpl(AddressRepo addressRepo, ModelMapper mapper) {
+    private final EmployeeClient employeeClient;
+
+    public AddressServiceImpl(AddressRepo addressRepo, ModelMapper mapper
+    , EmployeeClient employeeClient) {
         this.addressRepo = addressRepo;
         this.mapper = mapper;
+        this.employeeClient = employeeClient;
     }
 
     @Override
@@ -51,6 +57,7 @@ public class AddressServiceImpl implements AddressService {
             throw new BadRequestException("Employee ID should not be null!!");
         }
         // TODO: We need to check whether emp with this ID is present or not
+        employeeClient.getEmployeeById(empId);
 
         List<AddressDto> addressDtoList = employeeAddressDto.getAddresses();
         List<Address> addresses = addressDtoList.stream()
@@ -72,7 +79,7 @@ public class AddressServiceImpl implements AddressService {
             throw new BadRequestException("Employee ID should not be null!!");
         }
         // TODO: We need to check whether emp with this ID is present or not
-
+        employeeClient.getEmployeeById(employeeAddressDto.getEmpId());
         /*
             In this list few of the addressDTOs have the ID while the others
             have null, so we need to save the null ones while update the fresh ones

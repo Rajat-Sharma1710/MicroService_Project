@@ -19,7 +19,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<EmployeeDto> getEmployee(@PathVariable Long id) {
+    private ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
         EmployeeDto emp = employeeService.getEmployeeById(id);
         return new ResponseEntity<>(emp, HttpStatus.OK);
     }

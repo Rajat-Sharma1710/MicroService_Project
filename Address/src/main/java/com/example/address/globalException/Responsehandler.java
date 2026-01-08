@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 public class Responsehandler {
 
     private String message;
-    private HttpStatus status;
+    private String status;
     private LocalDateTime timeStamp;
 
-    public Responsehandler(String message, HttpStatus status) {
+    public Responsehandler(String message, String status) {
         this.message = message;
         this.status = status;
         this.timeStamp = LocalDateTime.now();
@@ -24,11 +24,11 @@ public class Responsehandler {
         this.message = message;
     }
 
-    public HttpStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(HttpStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
