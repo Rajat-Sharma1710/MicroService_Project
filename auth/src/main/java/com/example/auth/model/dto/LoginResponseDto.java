@@ -1,13 +1,15 @@
 package com.example.auth.model.dto;
 
+import java.util.Date;
+
 public class LoginResponseDto {
 
     private String userName;
     private String jwtToken;
 
-    private String validUntil;
+    private Date validUntil;
 
-    public LoginResponseDto(String userName, String jwtToken, String validUntil) {
+    public LoginResponseDto(String userName, String jwtToken, Date validUntil) {
         this.userName = userName;
         this.jwtToken = jwtToken;
         this.validUntil = validUntil;
@@ -29,11 +31,11 @@ public class LoginResponseDto {
         this.jwtToken = jwtToken;
     }
 
-    public String getValidUntil() {
+    public Date getValidUntil() {
         return validUntil;
     }
 
-    public void setValidUntil(String validUntil) {
+    public void setValidUntil(Date validUntil) {
         this.validUntil = validUntil;
     }
 }
