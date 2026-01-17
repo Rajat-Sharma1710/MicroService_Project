@@ -2,14 +2,16 @@ package com.example.address.service.impl;
 
 import com.example.address.client.EmployeeClient;
 import com.example.address.globalException.BadRequestException;
+import com.example.address.globalException.CustomException;
 import com.example.address.globalException.ResourceNotFoundException;
 import com.example.address.model.dto.AddressDto;
 import com.example.address.model.dto.EmployeeAddressDto;
-import com.example.address.model.dto.EmployeeDto;
 import com.example.address.model.entity.Address;
 import com.example.address.repository.AddressRepo;
 import com.example.address.service.AddressService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +53,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
+    @CircuitBreaker(name = "employeeService", fallbackMethod = "employeeFallback")
     public List<AddressDto> saveAllAddresses(EmployeeAddressDto employeeAddressDto) {
         Long empId = employeeAddressDto.getEmpId();
         if(empId == null) {
@@ -70,6 +73,18 @@ public class AddressServiceImpl implements AddressService {
         List<Address> savedAddresses = addressRepo.saveAll(addresses);
         return savedAddresses.stream()
                 .map(add -> mapper.map(add, AddressDto.class)).toList();
+    }
+
+    /*
+        Because gateway is first line of defense, protects clients and
+        prevents overloading backend services
+        That's why gateway CB is useful for client -> service failures
+        But it doesn't replace service-to-service resilience... VERY IMPORTANT
+     */
+
+    public List<AddressDto> employeeFallback(EmployeeAddressDto employeeAddressDto, Throwable ex) {
+        throw new CustomException("Employee service is unavailable. Cannot save address.",
+                HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @Override
