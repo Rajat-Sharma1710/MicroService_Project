@@ -1,0 +1,93 @@
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceURL:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost
+
+server:
+  port: 9090
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway,health,info,metrics,circuitBreakers
+
+jwt:
+  secret: askjfhKASKHAFFslkhafnlfAdnladhgognvFDLBNHoweutgjBlakjDGDsrladk
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: EMPLOYEE
+          uri: lb://employee
+          predicates:
+            - Path=/api/v1/employee/**
+          filters:
+            - AuthFilter
+            - name: CircuitBreaker
+              args:
+                name: EMPLOYEE-SERVICE
+                fallbackUri: forward:/employeeServiceFallback
+
+        - id: ADDRESS
+          uri: lb://address
+          predicates:
+            - Path=/api/v1/address/**
+          filters:
+            - AuthFilter
+            - name: CircuitBreaker
+              args:
+                name: ADDRESS-SERVICE
+                fallbackUri: forward:/addressServiceFallback
+
+        - id: AUTH
+          uri: lb://auth
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - AuthFilter
+
+resilience4j:
+  timelimiter:
+    instances:
+      EMPLOYEE-SERVICE:
+        timeoutDuration: 5s
+      ADDRESS-SERVICE:
+        timeoutDuration: 5s
+  circuitbreaker:
+    instances:
+      EMPLOYEE-SERVICE:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 6s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+
+      ADDRESS-SERVICE:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 6s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+
+  health:
+    circuitBreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
